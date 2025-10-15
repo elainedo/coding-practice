@@ -9,12 +9,16 @@ A subarray is a contiguous part of the array.
 
  
 '''
+from typing import List
+
 class Solution:
-    def splitArray(self, nums: List[int], k: int) -> int:
+    # Time: O(n^2k)
+    # Space: O(nk)
+    def splitArrayRecursionWithMemo(self, nums: List[int], k: int) -> int:
         # Top-down dynamic programming
         n = len(nums)   
         memo = {}
-        def dp(i, k):
+        def recurse(i, k):
             if (i, k) in memo:
                 return memo[(i, k)]
             if k == 1:
@@ -23,12 +27,14 @@ class Solution:
                 return float('inf')
             res = float('inf')
             for j in range(i, n):
-                res = min(res, max(sum(nums[i:j]), dp(j, k-1)))
+                res = min(res, max(sum(nums[i:j]), recurse(j, k-1)))
             memo[(i, k)] = res
             return res
-        return dp(0, k)
+        return recurse(0, k)
 
-    def splitArray(self, nums: List[int], k: int) -> int:
+    # Time: O(n^2k)
+    # Space: O(nk)
+    def splitArrayBottomUp(self, nums: List[int], k: int) -> int:
         # Bottom-up dynamic programming
         n = len(nums)
         dp = [[float('inf')] * (k+1) for _ in range(n+1)]  # dp[start_idx][groups_left]
@@ -41,7 +47,9 @@ class Solution:
                     dp[start_idx][groups_left] = min(dp[start_idx][groups_left], max(left_sum, right_min_largest))
         return dp[0][k]
 
-    def splitArray(self, nums: List[int], k: int) -> int:
+    # Time: O(nlog(sum(nums)))
+    # Space: O(1)
+    def splitArrayBinarySearch(self, nums: List[int], k: int) -> int:
         # Binary search
         n = len(nums)
         left, right = max(nums), sum(nums)
