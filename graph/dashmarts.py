@@ -67,12 +67,12 @@ class Solution:
         dirs = [(-1,0), (1,0), (0,-1), (0,1)]
         while queue:
             r, c = queue.popleft()
-            if city[r][c] == 'X':
-                continue
+            # if city[r][c] == 'X':
+            #     continue
             for dr, dc in dirs:
                 nr, nc = r + dr, c + dc
                 # Can only enter open road cells, and those not yet visited
-                if 0 <= nr < ROWS and 0 <= nc < COLS and dist[nr][nc] == -1:
+                if 0 <= nr < ROWS and 0 <= nc < COLS and city[nr][nc] != 'X' and dist[nr][nc] == -1:
                     queue.append((nr, nc))
                     dist[nr][nc] = dist[r][c] + 1
 
@@ -81,6 +81,13 @@ class Solution:
         for r, c in locations:
             if city[r][c] == 'D':
                 result.append(0)
+            elif city[r][c] == 'X':
+                distance = float('inf')
+                for dr, dc in dirs:
+                    adj_x, adj_y = r + dr, c + dc
+                    if 0 <= adj_x < ROWS and 0 <= adj_y < COLS and city[adj_x][adj_y] != 'X' and dist[adj_x][adj_y] != -1:
+                        distance = min(distance, dist[adj_x][adj_y] + 1)
+                result.append(distance if distance != float('inf') else -1)
             else:
                 result.append(dist[r][c])
         return result
